@@ -1,2 +1,0 @@
-# nyt
-NYT React Search

@@ -1,56 +1,85 @@
-var express = require('express'); 
-var bodyParser = require('body-parser'); 
-var logger = require('morgan'); 
-var mongoose = require('mongoose'); 
+// Include Server Dependencies
+var express = require('express');
+var bodyParser = require('body-parser');
+var logger = require('morgan');
+var mongoose = require('mongoose');
 
-//	Require Article Schema
-var Article =  require('./models/Article.js'); 
+//Require History Schema
+var History = require('./models/History.js');
 
-//	Express instance 
-var app = express(); 
-var PORT = process.env.PORT || 3000; 
+// Create Instance of Express
+var app = express();
+var PORT = process.env.PORT || 3000; // Sets an initial port. We'll use this later in our listener
 
-//	Morgan to log 
-app.(logger('dev')); 
-app.use(bodyParser.json()); 
-app.use(bodyParser.urlencoded({extended: true})); 
-app.use(bodyParser.text()); 
-app.use(bodyParser.json({type: 'application/vnd.api+json'})); 
+// Run Morgan for Logging
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.text());
+app.use(bodyParser.json({type:'application/vnd.api+json'}));
 
-app.use(express.static('./public')); 
+app.use(express.static('./public'));
 
-//+++++++++++++++++++++++++++++++++++++++++++++++++++
+// -------------------------------------------------
 
-//	MongoDB config
-mongoose.connect('mongodb://localhost/nytDB');
-var db = mongoose.connection; 
+// MongoDB Configuration configuration (Change this URL to your own DB)
+mongoose.connect('mongodb://localhost/nytreactDB');
+var db = mongoose.connection;
 
-db.on('error', function (err){
-	console.log('Mongoose Error: ', err); 
+db.on('error', function (err) {
+  console.log('Mongoose Error: ', err);
 });
 
-db.once('open', function() {
-	console.log('Mongoose connection succesful!'); 
+db.once('open', function () {
+  console.log('Mongoose connection successful.');
 });
 
-//+++++++++++++++++++++++++++++++++++++++++++++++++++
 
-//	Main route setup that redirects to rendered React app
+// -------------------------------------------------
+
+// Main Route. This route will redirect to our rendered React application
 app.get('/', function(req, res){
-	res.sendFile('./public/index.html'); 
-}); 
+  res.sendFile('./public/index.html');
+})
 
-//+++++ Send GET requests & calls this route on page render
-app.get('/api/', function(req, res){
-	console.log("IT'S THE API ROUTE"); 
+// This is the route we will send GET requests to retrieve our most recent search data.
+// We will call this route the moment our page gets rendered
+app.get('/api/', function(req, res) {
+
+  // We will find all the records, sort it in descending order, then limit the records to 5
+  History.find({}).sort([['date', 'descending']]).limit(5)
+    .exec(function(err, doc){
+
+      if(err){
+        console.log(err);
+      }
+      else {
+        res.send(doc);
+      }
+    })
 });
 
+// This is the route we will send POST requests to save each search.
 app.post('/api/', function(req, res){
-	var newSearch = new Article(req.body); 
-	//console.log("BODY: " + req.body.location)??
+  var newSearch = new History(req.body);
+  console.log("BODY: " + req.body.location);
+
+  // Here we'll save the location based on the JSON input. 
+  // We'll use Date.now() to always get the current date time
+  History.create({"location": req.body.location, "date": Date.now()}, function(err){
+    if(err){
+      console.log(err);
+    }
+    else {
+      res.send("Saved Search");
+    }
+  })
 });
 
-app.listen(PORT, function(){
-	console.log("App listening on PORT: " + PORT); 
-}); 
 
+// -------------------------------------------------
+
+// Listener
+app.listen(PORT, function() {
+  console.log("App listening on PORT: " + PORT);
+});

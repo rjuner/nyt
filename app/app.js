@@ -1,14 +1,13 @@
-//	Include the Main React Dependencies
-var React =  require('react'); 
-var ReactDOM = require('react-dom'); 
+// Include the Main React Dependencies
+var React = require('react');
+var ReactDOM = require('react-dom');
 
-//	Including the Main Component
-var Main = require('./Components/Main'); 
+// Include the Main Component
+var Main = require('./Components/Main')
 
-//	Renders the main component ("Main")
-
+// This code here allows us to render our main component (in this case "Main")
 ReactDOM.render(
 
-	<Main />
-	document.getElementsById('app')
+	<Main />,
+	document.getElementById('app')
 )
