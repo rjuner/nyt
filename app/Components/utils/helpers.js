@@ -32,11 +32,11 @@ var helpers = {
 
 				for(var i = 0; i < 5; i++){
 
-					var oneArticle = []
+					var oneArticle = {title:response.data.response.docs[i].headline.main, date:response.data.response.docs[i].pub_date, url: response.data.response.docs[i].web_url};
 
-					oneArticle.push(response.data.response.docs[i].headline.main);
-					oneArticle.push(response.data.response.docs[i].pub_date);
-					oneArticle.push(response.data.response.docs[i].web_url);
+					// oneArticle.push(response.data.response.docs[i].headline.main);
+					// oneArticle.push(response.data.response.docs[i].pub_date);
+					// oneArticle.push(response.data.response.docs[i].web_url);
 
 					articlesfromNYT.push(oneArticle);
 				}

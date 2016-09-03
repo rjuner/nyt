@@ -19776,10 +19776,10 @@
 		getInitialState: function getInitialState() {
 			return {
 				//what user inputs as Topic to search
-				searchTopic: "",
+				searchTerm: "",
 
 				//what comes back from the JSON
-				results: "",
+				results: [],
 
 				history: [] /*Note how we added in this history state variable*/
 			};
@@ -19805,6 +19805,8 @@
 						// console.log(data[1]);
 
 						console.log("Address", data);
+
+						console.log(data);
 
 						this.setState({
 							results: data
@@ -20025,21 +20027,18 @@
 						null,
 						"Address:"
 					),
-					React.createElement(
-						"p",
-						null,
-						this.props.address[0]
-					),
-					React.createElement(
-						"p",
-						null,
-						this.props.address[1]
-					),
-					React.createElement(
-						"p",
-						null,
-						this.props.address[2]
-					)
+					this.props.address.map(function (search, i) {
+						return React.createElement(
+							"p",
+							{ key: i },
+							search.title,
+							" - ",
+							search.url,
+							" - ",
+							search.date,
+							" "
+						);
+					})
 				)
 			);
 		}
@@ -20135,11 +20134,11 @@
 
 				for (var i = 0; i < 5; i++) {
 
-					var oneArticle = [];
+					var oneArticle = { title: response.data.response.docs[i].headline.main, date: response.data.response.docs[i].pub_date, url: response.data.response.docs[i].web_url };
 
-					oneArticle.push(response.data.response.docs[i].headline.main);
-					oneArticle.push(response.data.response.docs[i].pub_date);
-					oneArticle.push(response.data.response.docs[i].web_url);
+					// oneArticle.push(response.data.response.docs[i].headline.main);
+					// oneArticle.push(response.data.response.docs[i].pub_date);
+					// oneArticle.push(response.data.response.docs[i].web_url);
 
 					articlesfromNYT.push(oneArticle);
 				}

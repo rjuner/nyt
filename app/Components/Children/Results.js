@@ -17,9 +17,12 @@ var Results = React.createClass({
 
 						<h1>Address:</h1>
 
-						<p>{this.props.address[0]}</p>
-						<p>{this.props.address[1]}</p>
-						<p>{this.props.address[2]}</p>
+						{this.props.address.map(function(search, i)
+						{
+							return <p key={i}>{search.title} - {search.url} - {search.date} </p> 
+						}
+
+					)}
 				</div>
 			</div>
 

@@ -16,12 +16,10 @@ var Main = React.createClass({
 	getInitialState: function(){
 		return {
 			//what user inputs as Topic to search
-			searchTopic: "",
-
-
+			searchTerm: "",
 
 			//what comes back from the JSON
-			results: "",
+			results: [],
 
 
 			history: [] /*Note how we added in this history state variable*/
@@ -50,6 +48,8 @@ var Main = React.createClass({
 						// console.log(data[1]);
 
 						console.log("Address", data);
+
+						console.log(data);
 
 						this.setState({
 							results: data
